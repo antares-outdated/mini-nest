@@ -7,7 +7,6 @@ import { ExpressAdapter } from '../platform-express/express.adapter';
 export class NestFactoryStatic {
 
     public async create(module: any) {
-        console.log(module);
         const container = new NestContainer();
         await this.initialize(module, container);
 
