@@ -42,9 +42,10 @@ export class NestApplication {
      * Он запускает процесс инициализации http сервера, регистрации
      * созданных роутеров, и запуска сервера на выбранном порте.
      */
-    public async listen(port: number | string) {
+    public async listen(port: number | string, fn: any) {
         await this.init();
         this.httpAdapter.listen(port);
+        fn();
         return this.httpServer;
     }
 
