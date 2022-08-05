@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { MODULE_METADATA as metadataConstants } from '../constants';
 
 const metadataKeys = [
@@ -31,7 +32,7 @@ export function Module(metadata: any): ClassDecorator {
   const propsKeys = Object.keys(metadata);
   validateModuleKeys(propsKeys);
 
-  return (target: Function) => {
+  return (target: any) => {
     for (const property in metadata) {
       if (metadata.hasOwnProperty(property)) {
         Reflect.defineMetadata(property, (metadata as any)[property], target);

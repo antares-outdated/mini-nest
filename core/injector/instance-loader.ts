@@ -25,7 +25,7 @@ export class InstanceLoader {
                 await this.createInstancesOfProviders(module);
                 await this.createInstancesOfControllers(module);
             })
-        )
+        );
     }
 
     private async createInstancesOfProviders(module: Module) {
@@ -33,7 +33,7 @@ export class InstanceLoader {
         const wrappers = [...providers.values()];
         await Promise.all(
             wrappers.map(item => this.injector.loadProvider(item, module)),
-        )
+        );
     }
 
     private async createInstancesOfControllers(module: Module) {
@@ -41,6 +41,6 @@ export class InstanceLoader {
         const wrappers = [...controllers.values()];
         await Promise.all(
             wrappers.map(item => this.injector.loadControllers(item, module)),
-        )
+        );
     }
 }

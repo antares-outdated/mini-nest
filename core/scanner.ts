@@ -23,11 +23,11 @@ export class DependenciesScanner {
 
         // Перебирает внутренние модули этого модуля, чтобы сделать с ними тоже самое.
         // То есть, происходит рекурсия.
-        for (const [index, innerModule] of innerModules.entries()) {
-            await this.scanForModules(innerModule)
+        for (const [, innerModule] of innerModules.entries()) {
+            await this.scanForModules(innerModule);
         }
 
-        return moduleInstance
+        return moduleInstance;
     }
 
     /**

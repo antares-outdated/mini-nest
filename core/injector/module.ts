@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { InstanceWrapper } from "./instance-wrapper";
 import { randomStringGenerator } from "../../common/utils/random-string-generator.util";
 
@@ -40,7 +41,7 @@ export class Module {
               metatype: provider,
               instance: null,
             }),
-        )
+        );
     }
 
     public addController(controller: any) {

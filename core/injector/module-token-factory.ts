@@ -6,7 +6,7 @@ export class ModuleTokenFactory {
     // Здесь хранятся данные о том, какие модули уже были отсканированны.
     // На случай того, если один модуль является зависимостью у нескольких,
     // чтобы не было дубликатов.
-    private readonly moduleIdsCashe = new WeakMap<Type<unknown>, string>()
+    private readonly moduleIdsCashe = new WeakMap<Type<unknown>, string>();
 
     public create(metatype: Type<unknown>): string {
         const moduleId = this.getModuleId(metatype);

@@ -1,5 +1,5 @@
 import { AbstractHttpAdapter } from '../core/adapters';
-import { isNil, isObject } from '../common/utils/shared.utils'
+import { isNil, isObject } from '../common/utils/shared.utils';
 import express from 'express';
 import * as http from 'http';
 import {

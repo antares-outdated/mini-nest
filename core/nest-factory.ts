@@ -7,24 +7,25 @@ import { ExpressAdapter } from '../platform-express/express.adapter';
 export class NestFactoryStatic {
 
     public async create(module: any) {
+        console.log(module);
         const container = new NestContainer();
         await this.initialize(module, container);
 
-        const httpServer = new ExpressAdapter()
+        const httpServer = new ExpressAdapter();
         container.setHttpAdapter(httpServer);
         const instance = new NestApplication(
             container,
             httpServer,
         );
-        
+
         return instance;
     }
 
     private async initialize(
-        module: any, 
+        module: any,
         container: NestContainer,
     ) {
-        const instanceLoader = new InstanceLoader(container)
+        const instanceLoader = new InstanceLoader(container);
         const dependenciesScanner = new DependenciesScanner(container);
 
         await dependenciesScanner.scan(module);

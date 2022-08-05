@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpServer } from '../common/interfaces/http-server.interface';
 import { Resolver } from './router/interfaces/resolver.interface';
 import { addLeadingSlash } from '../common/utils/shared.utils';
@@ -42,10 +43,14 @@ export class NestApplication {
      * Он запускает процесс инициализации http сервера, регистрации
      * созданных роутеров, и запуска сервера на выбранном порте.
      */
-    public async listen(port: number | string, fn: any) {
+    public async listen(port: number | string, fn?: any) {
         await this.init();
         this.httpAdapter.listen(port);
-        fn();
+
+        if (fn) {
+            fn();
+        }
+
         return this.httpServer;
     }
 
@@ -55,7 +60,7 @@ export class NestApplication {
      * таких как post и get.
      */
     public async registerRouter() {
-        const prefix = ''
+        const prefix = '';
         const basePath = addLeadingSlash(prefix);
         this.routesResolver.resolve(this.httpAdapter, basePath);
     }

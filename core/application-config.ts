@@ -1,5 +1,5 @@
 export class ApplicationConfig {
-    private globalPrefix = ''
+    private globalPrefix = '';
 
     public getGlobalPrefix() {
         return this.globalPrefix;

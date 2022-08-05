@@ -9,9 +9,9 @@ import { isNil, isString } from "../utils/shared.utils";
 const createPipesRouteParamDecorator = (paramtype: RouteParamtypes) => (
     data?: any,
   ): ParameterDecorator => (target, key, index) => {
-    console.log('paramtype: ', paramtype)
-    console.log('key: ', key)
-    console.log('index: ', index)
+    // console.log('paramtype: ', paramtype);
+    // console.log('key: ', key);
+    // console.log('index: ', index);
     const hasParamData = isNil(data) || isString(data);
     const paramData = hasParamData ? data : undefined;
     const args =

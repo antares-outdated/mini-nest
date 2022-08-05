@@ -6,7 +6,7 @@ export function Controller(
 ): ClassDecorator {
   const defaultPath = '/';
   
-  const path = isUndefined(prefix) ? defaultPath : prefix
+  const path = isUndefined(prefix) ? defaultPath : prefix;
 
   return (target: object) => {
     Reflect.defineMetadata(PATH_METADATA, path, target);

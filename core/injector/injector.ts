@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Module } from "./module";
 import { InstanceWrapper } from './instance-wrapper';
 import { Controller } from '../../common/interfaces/controller.interface';
@@ -14,7 +15,7 @@ export class Injector {
 
         const targetWrapper = collection.get(name);
         if (!targetWrapper) {
-            throw Error('TARGET WRAPPER NOT FOUNDED')
+            throw Error('TARGET WRAPPER NOT FOUNDED');
         }
         const callback = async (instances: unknown[]) => { 
             await this.instantiateClass(
@@ -22,7 +23,7 @@ export class Injector {
                 wrapper,
                 targetWrapper,
             );
-        }
+        };
         await this.resolveConstructorParams<T>(
             wrapper,
             moduleRef,
@@ -67,17 +68,13 @@ export class Injector {
         moduleRef: Module,
         callback: (args: unknown[]) => void | Promise<void>,
     ) {
-        const dependencies = Reflect.getMetadata('design:paramtypes', wrapper.metatype) 
+        const dependencies = Reflect.getMetadata('design:paramtypes', wrapper.metatype); 
     
-        const resolveParam = async (param: Function, index: number) => {
-          try {
-            let providers = moduleRef.providers
+        const resolveParam = async (param: () => void, index: number) => {
+            const providers = moduleRef.providers;
             const paramWrapper = providers.get(param.name);
-            console.log(`paramInstance: ${paramWrapper?.instance}`)
-            return paramWrapper?.instance
-          } catch (err) {
-              throw err;
-          }
+            // console.log(`paramInstance: ${paramWrapper?.instance}`);
+            return paramWrapper?.instance;
         };
         const instances = dependencies ? await Promise.all(dependencies.map(resolveParam)) : [];
         await callback(instances);
@@ -95,7 +92,7 @@ export class Injector {
         targetMetatype: InstanceWrapper,
     ): Promise<T> {
         const { metatype } = wrapper;
-        console.log(`instances: ${instances}`)
+        // console.log(`instances: ${instances}`);
 
         targetMetatype.instance = instances 
             ? new (metatype as Type<any>)(...instances) 

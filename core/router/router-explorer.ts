@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NestContainer } from '../injector/container';
 import { RouterProxyCallback } from './router-proxy';
 import { addLeadingSlash } from '../../common/utils/shared.utils';
 import { Type } from '../../common/interfaces/type.interface';
 import { Controller } from '../../common/interfaces/controller.interface';
-import { PATH_METADATA, METHOD_METADATA, ROUTE_ARGS_METADATA, PARAMTYPES_METADATA } from '../../common/constants';
+import { PATH_METADATA, METHOD_METADATA, ROUTE_ARGS_METADATA } from '../../common/constants';
 import { RequestMethod } from '../../common/enums/request-method.enum';
 import { HttpServer } from '../../common/interfaces/http-server.interface';
 import { InstanceWrapper } from '../injector/instance-wrapper';
@@ -49,7 +50,7 @@ export class RouterExplorer {
               module,
               basePath,
             );
-        })
+        });
     }
 
     /**
@@ -64,7 +65,7 @@ export class RouterExplorer {
         instance: Controller,
       ): RoutePathProperties[] {
         const instancePrototype = Object.getPrototypeOf(instance);
-        let methodNames = Object.getOwnPropertyNames(instancePrototype);
+        const methodNames = Object.getOwnPropertyNames(instancePrototype);
 
         const isMethod = (prop: string) => {
           const descriptor = Object.getOwnPropertyDescriptor(instancePrototype, prop);
@@ -74,7 +75,7 @@ export class RouterExplorer {
           return !isConstructor(prop) && isFunction(instancePrototype[prop]);
         };
     
-        return methodNames.filter(isMethod).map(method => this.exploreMethodMetadata(instance, instancePrototype, method))
+        return methodNames.filter(isMethod).map(method => this.exploreMethodMetadata(instance, instancePrototype, method));
     }
 
     /**
@@ -154,16 +155,16 @@ export class RouterExplorer {
       // Достает ключи данных запроса указанных раннее в декораторах @Body() и @Param()
       const metadata = Reflect.getMetadata(ROUTE_ARGS_METADATA, instance.constructor, methodName) || {};
       const keys = Object.keys(metadata);
-      const argsLength = Math.max(...keys.map(key => metadata[key].index)) + 1
+      const argsLength = Math.max(...keys.map(key => metadata[key].index)) + 1;
       // Было создано автоматически
-      const paramtypes = Reflect.getMetadata(PARAMTYPES_METADATA, instance, methodName);
+      // const paramtypes = Reflect.getMetadata(PARAMTYPES_METADATA, instance, methodName);
 
-      const mergeParamsMetatypes = (paramsProperties: any, paramtypes_: any) => {
-        paramsProperties.map((param: any) => ({
-          ...param,
-          metatype: paramtypes_[param.index],
-        }));
-      }
+      // const mergeParamsMetatypes = (paramsProperties: any, paramtypes_: any) => {
+      //   paramsProperties.map((param: any) => ({
+      //     ...param,
+      //     metatype: paramtypes_[param.index],
+      //   }));
+      // };
       // const paramsOptions = mergeParamsMetatypes(
       //   this.exchangeKeysForValues(keys, metadata),
       //   paramtypes,
@@ -171,12 +172,12 @@ export class RouterExplorer {
       // Извлеченные данные из request, такие как тело и параметры запроса.
       const paramsOptions = this.exchangeKeysForValues(keys, metadata);
 
-      const fnApplyParams = this.resolveParamsOptions(paramsOptions)
+      const fnApplyParams = this.resolveParamsOptions(paramsOptions);
       const handler = <TRequest, TResponse>(
         args: any[],
         req: TRequest,
         res: TResponse,
-        next: Function,
+        next: () => void,
       ) => async () => {
         // так как args это объект, а не примитивная переменная,
         // то он передается по ссылке, а не по значению,
@@ -191,31 +192,26 @@ export class RouterExplorer {
       const targetCallback = async <TRequest, TResponse>(
           req: TRequest,
           res: TResponse,
-          next: Function,
+          next: () => void,
         ) => {
           // Заполняется undefined для дальнейшего изменения реальными данными
           // из request
+          // eslint-disable-next-line prefer-spread
           const args = Array.apply(null, { argsLength } as any).fill(undefined);
           // result это экземпляр контроллера с пространством данных аргументов
           // из request
-          const result = await handler(args, req, res, next)()
-          const applicationRef = this.container.getHttpAdapterRef()
+          const result = await handler(args, req, res, next)();
+          const applicationRef = this.container.getHttpAdapterRef();
           if(!applicationRef) {
-            throw new Error(`Http server not created`)
+            throw new Error(`Http server not created`);
           }
           return await applicationRef.reply(res, result);
-        }
+        };
       return async <TRequest, TResponse>(
         req: TRequest,
         res: TResponse,
         next: () => void,
-      ) => {
-        try {
-          await targetCallback(req, res, next);
-        } catch (e) {
-          throw e
-        }
-      };
+      ) => await targetCallback(req, res, next);
     }
 
     /**
@@ -227,10 +223,10 @@ export class RouterExplorer {
         const resolveParamValue = async (param: any) => {
           const { index, extractValue } = param;
           const value = extractValue(req, res, next);
-          args[index] = value
-        }
+          args[index] = value;
+        };
         await Promise.all(paramsOptions.map(resolveParamValue));
-      }
+      };
       return paramsOptions && paramsOptions.length ? resolveFn : null;
     }
 
@@ -250,15 +246,15 @@ export class RouterExplorer {
         const extractValue = <TRequest, TResponse>(
           req: TRequest,
           res: TResponse,
-          next: Function,
+          next: () => void,
         ) =>
           this.exchangeKeyForValue(numericType, data, {
             req,
             res,
             next,
         });
-        return { index, extractValue, type: numericType, data }
-      })
+        return { index, extractValue, type: numericType, data };
+      });
     }
 
     /**
@@ -274,7 +270,7 @@ export class RouterExplorer {
     >(
       key: RouteParamtypes | string,
       data: string | object | any,
-      { req, res, next }: { req: TRequest; res: TResponse; next: Function },
+      { req, res, next }: { req: TRequest; res: TResponse; next: () => void },
     ): TResult | null {
       switch (key) {
         case RouteParamtypes.BODY:

@@ -64,12 +64,12 @@ export class NestContainer {
         }
         const moduleRef = this.modules.get(token);
         if (!moduleRef) {
-            throw Error('MODULE NOT EXIST')
+            throw Error('MODULE NOT EXIST');
         }
 
         const related = this.modules.get(relatedModule.name);
         if (!related) {
-            throw Error('RELATED MODULE NOT EXIST')
+            throw Error('RELATED MODULE NOT EXIST');
         }
         moduleRef.addRelatedModule(related);
     }
@@ -84,9 +84,9 @@ export class NestContainer {
         }
         const moduleRef = this.modules.get(token);
         if (!moduleRef) {
-            throw Error('MODULE NOT EXIST')
+            throw Error('MODULE NOT EXIST');
         }
-        moduleRef.addProvider(provider)
+        moduleRef.addProvider(provider);
     }
 
     /**
@@ -99,7 +99,7 @@ export class NestContainer {
         }
         const moduleRef = this.modules.get(token);
         if (!moduleRef) {
-            throw Error('MODULE NOT EXIST')
+            throw Error('MODULE NOT EXIST');
         }
         moduleRef.addController(controller);
     }

@@ -12,7 +12,7 @@ export class AppController {
 
   @Post('body/:id')
   recieveBody(@Body() data: any, @Param('id') id: string) {
-    console.log('body: ', data.data);
+    // console.log('body: ', data.data);
     return `body: ${data.data} has been recieved and id: ${id}`;
   }
 }
